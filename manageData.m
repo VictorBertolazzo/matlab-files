@@ -61,6 +61,18 @@ t=test.Time(1,1:foe)';
 speed = test.Veh_GPSVel_kmh_Act(1,1:foe)'./3.6;% % km/h->m/s
 figure(3600),plot(t,speed)
 %  saveas(gvl,'pics/gvl.png');
+%% Smoothing Speed Curve
+% % Credits to Damien Garcia
+sspeed = smoothn(speed,10e3, 'robust');
+figure,plot(t,speed,'b',t,sspeed,'r')
+mspeed = horzcat(t,sspeed);
+% dlmwrite('../WL_DesiredSpeedSmoothed.dat',mspeed,'delimiter','\t','precision',5);
+%% Reduced smoothed speed curve
+rt = t(900:4900,:)-t(900,1);
+rsspeed = sspeed(900:4900,:);
+figure,plot(t,speed,'b',t,sspeed,'r',rt,rsspeed,'g*')
+mrspeed = horzcat(rt,rsspeed);
+dlmwrite('../WL_DesSpeedShort.dat',mrspeed,'delimiter','\t','precision',5);
 %% Piston Pressures
 psf=figure(140),createFancyPlot(test,names,{'VehLiftArmBot_Pr_bar_Act','VehLiftArmTop_Pr_bar_Act'},foe)
 %  saveas(psf,'pics/psf.png');
